@@ -36,7 +36,7 @@ import {
 import Image from "next/image";
 
 const clientId =
-  "BJKdDFkNtkWX87XqkuWrDu4rbkSvWyQZ5lswS0ucINxxcN0inRVW8zzKAywPPzgiOHP7_3PcfFwfpvcQvSdaLRs";
+  "BM1TbBgipafOVocBMS9vkA_L4YZaGMTqiWaUMOdnV_RaRtqCP0VWesZbBdro3fPS1rtK7lfOAhmBMiUcA-usYc8";
 
 const chainConfig = {
   chainNamespace: CHAIN_NAMESPACES.EIP155,
