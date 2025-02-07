@@ -5,7 +5,11 @@ export const Users = pgTable("users", {
   id: serial("id").primaryKey(),
   email: varchar("email", { length: 255 }).notNull().unique(),
   name: varchar("name", { length: 255 }).notNull(),
+<<<<<<< HEAD
   phone: integer("phone"),
+=======
+  phone: integer("phone").unique(),
+>>>>>>> 90f715ffc2d19f0e3a27e2e6e1bb2adb1d8eda7a
   address: varchar("address", { length: 455 }),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
