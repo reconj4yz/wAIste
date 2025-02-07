@@ -113,18 +113,33 @@ export default function ReportPage() {
         },
       ]
 
-      const prompt = `You are an expert in waste management and recycling. Analyze this image and provide:
-        1. The type of waste (e.g., plastic, paper, glass, metal, organic)
-        2. An estimate of the quantity or amount (in kg or liters)
-        3. Your confidence level in this assessment (as a percentage)
+      // const prompt = `You are an expert in waste management and recycling. Analyze this image and provide:
+      //   1. The type of waste (e.g., plastic, paper, glass, metal, organic)
+      //   2. An estimate of the quantity or amount (in kg or liters)
+      //   3. Your confidence level in this assessment (as a percentage)
         
-        Respond only with the following JSON object, and nothing else:
+      //   Respond only with the following JSON object, and nothing else:
 
-        {
-          "wasteType": "type of waste",
-          "quantity": "estimated quantity with unit",
-          "confidence": confidence level as a number between 0 and 1
-        }`
+      //   {
+      //     "wasteType": "type of waste",
+      //     "quantity": "estimated quantity with unit",
+      //     "confidence": confidence level as a number between 0 and 1
+      //   }`
+            const prompt = `You are an expert in waste management and recycling. Analyze this image and provide:
+      1. The type of waste (e.g., plastic, paper, glass, metal, organic)
+      2. An estimate of the quantity or amount (in kg or liters)
+      3. Your confidence level in this assessment (as a percentage)
+
+      Additionally, if a human or an animal is detected in the image, include this information in the response but still analyze the waste.
+
+      Respond only with the following JSON object, and nothing else:
+
+      {
+        "wasteType": "type of waste",
+        "quantity": "estimated quantity with unit",
+        "confidence": confidence level as a number between 0 and 1,
+        "humanOrAnimalDetected": true/false
+      }`
 
       const result = await model.generateContent([prompt, ...imageParts])
       const response = await result.response
