@@ -1,44 +1,76 @@
 'use client'
-import { useState } from 'react'
-import { User, Mail, Phone, MapPin, Save } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { User, Mail, Phone, Home, Save } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { db } from '@/utils/db/dbConfig'
+import { Users } from '@/utils/db/schema'
+import { eq } from 'drizzle-orm'
 
 type UserSettings = {
   name: string
   email: string
-  phone: string
+  phone: number
   address: string
-  notifications: boolean
 }
 
 export default function SettingsPage() {
-  const [settings, setSettings] = useState<UserSettings>({
-    name: 'John Doe',
-    email: 'john.doe@example.com',
-    phone: '+1 234 567 8900',
-    address: '123 Eco Street, Green City, 12345',
-    notifications: true,
-  })
+  const [settings, setSettings] = useState<UserSettings | null>(null);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+
+  useEffect(() => {
+    const storedEmail = localStorage.getItem('userEmail');
+    if (storedEmail) {
+      setUserEmail(storedEmail);
+      fetchUserData(storedEmail);
+    }
+  }, []);
+
+  const fetchUserData = async (email: string) => {
+    try {
+      const user = await db.select().from(Users).where(eq(Users.email, email)).execute();
+      if (user.length > 0) {
+        setSettings({
+          name: user[0].name || '',
+          email: user[0].email || '',
+          phone: user[0].phone || +91,
+          address: user[0].address || '',
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    }
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target
-    setSettings(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value,
-    }))
-  }
+    const { name, value } = e.target;
+    setSettings(prev => prev ? { ...prev, [name]: value } : prev);
+  };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    // Here you would typically send the updated settings to your backend
-    console.log('Updated settings:', settings)
-    alert('Settings updated successfully!')
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!settings) return;
+
+    try {
+      await db.update(Users)
+        .set({ name: settings.name, phone: settings.phone, address: settings.address })
+        .where(eq(Users.email, settings.email))
+        .execute();
+
+      alert('Settings updated successfully!');
+    } catch (error) {
+      console.error('Error updating settings:', error);
+      alert('Failed to update settings.');
+    }
+  };
+
+  if (!settings) {
+    return <div className="p-8 max-w-2xl mx-auto text-center">Loading...</div>;
   }
 
   return (
     <div className="p-8 max-w-2xl mx-auto">
       <h1 className="text-3xl font-semibold mb-6 text-gray-800">Account Settings</h1>
-      
+
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
           <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
@@ -50,6 +82,7 @@ export default function SettingsPage() {
               value={settings.name}
               onChange={handleInputChange}
               className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500"
+              placeholder="Enter your full name"
             />
             <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
           </div>
@@ -63,8 +96,8 @@ export default function SettingsPage() {
               id="email"
               name="email"
               value={settings.email}
-              onChange={handleInputChange}
-              className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500"
+              disabled
+              className="pl-10 w-full px-4 py-2 border border-gray-300 bg-gray-100 rounded-md cursor-not-allowed"
             />
             <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
           </div>
@@ -74,12 +107,13 @@ export default function SettingsPage() {
           <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
           <div className="relative">
             <input
-              type="tel"
+              type="text"
               id="phone"
               name="phone"
               value={settings.phone}
               onChange={handleInputChange}
               className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500"
+              placeholder="Enter your phone number"
             />
             <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
           </div>
@@ -95,23 +129,10 @@ export default function SettingsPage() {
               value={settings.address}
               onChange={handleInputChange}
               className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500"
+              placeholder="Enter your address"
             />
-            <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+            <Home className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
           </div>
-        </div>
-
-        <div className="flex items-center">
-          <input
-            type="checkbox"
-            id="notifications"
-            name="notifications"
-            checked={settings.notifications}
-            onChange={handleInputChange}
-            className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
-          />
-          <label htmlFor="notifications" className="ml-2 block text-sm text-gray-700">
-            Receive email notifications
-          </label>
         </div>
 
         <Button type="submit" className="w-full bg-green-500 hover:bg-green-600 text-white">
@@ -120,5 +141,5 @@ export default function SettingsPage() {
         </Button>
       </form>
     </div>
-  )
+  );
 }

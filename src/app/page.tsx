@@ -90,7 +90,7 @@ export default function Home() {
           w<span className="text-green-600">AI</span>ste <span className="text-green-600">Management</span>
         </h1>
         <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed mb-8">
-          Join our community in making waste management more efficient and rewarding!
+        Join us in making waste management efficient, sustainable, and a shared responsibility for everyone!
         </p>
         {!loggedIn ? (
           <Button onClick={login} className="bg-green-600 hover:bg-green-700 text-white text-lg py-6 px-10 rounded-full font-medium transition-all duration-300 ease-in-out transform hover:scale-105">
