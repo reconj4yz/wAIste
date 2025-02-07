@@ -82,7 +82,7 @@ export default function Home() {
   };
 
   return (
-    <div className={`container mx-auto px-4 py-16 ${poppins.className}`}>
+    <div  className={`container mx-auto px-4 py-16 ${poppins.className}`} suppressHydrationWarning>
       <section className="text-center mb-20">
         <AnimatedGlobe />
         {/* <Image src="/w.png" alt="logo" width={65} height={65} /> */}
