@@ -8,7 +8,7 @@ export const Users = pgTable("users", {
 <<<<<<< HEAD
   phone: integer("phone"),
 =======
-  phone: integer("phone").unique(),
+  phone: integer("phone"),
 >>>>>>> 90f715ffc2d19f0e3a27e2e6e1bb2adb1d8eda7a
   address: varchar("address", { length: 455 }),
   createdAt: timestamp("created_at").defaultNow().notNull(),
