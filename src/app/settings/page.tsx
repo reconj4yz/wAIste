@@ -58,8 +58,8 @@ export default function SettingsPage() {
 
       alert('Settings updated successfully!');
     } catch (error) {
-      console.error('Error updating settings:', error);
-      alert('Failed to update settings.');
+      console.error('Error updating profile:', error);
+      alert('Failed to update profile.');
     }
   };
 
