@@ -244,7 +244,7 @@ export default function Header({ onMenuClick, totalEarnings }: HeaderProps) {
   };
 
   if (loading) {
-    return <div>Loading Web3Auth...</div>;
+    return <div>Loading Auth...</div>;
   }
 
   return (
